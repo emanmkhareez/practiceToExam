@@ -2,95 +2,90 @@ import { assertExpressionStatement } from '@babel/types';
 import React, { Component } from 'react'
 import axios from 'axios'
 import Form from './components/Form';
-import CardMovie from './components/CardMovie';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Card,Button}from 'react-bootstrap';
 import LoginButton from './components/LoginButton'
+import Profile from './components/Profile';
+import { withAuth0 } from '@auth0/auth0-react';
+import Header from './components/Header';
+import FavMovie from './components/FavMovie';
+import CardMovie from './components/CardMovie';
 import {
   BrowserRouter as Router,
   Switch,
   Route
 } from "react-router-dom";
- class App extends Component {
-   constructor(props){
-     super(props)
-     this.state={
-       MovieArry:[],
-       searchQurey:''
-     }
-   }
-   
-   componentDidMount = async()=>{
-     
-    // await this.setState({
-    //   searchQurey:event.target.query.value
+import LogoutButton from './components/LogoutButton';
+class App extends React.Component {
+
+  //   constructor(props){
+  //     super(props)
+  //     this.state={
+  //       bookarray:[],
+  //       userEmail: ''
+  //     }
+  //   }
     
-    // })
-    
-        //http://localhost:3001/movies?api_key=bec06652a4cb9591d54fceb6bc996e54&query=Action
-        let url=`http://localhost:3001/movies?api_key=bec06652a4cb9591d54fceb6bc996e54&query=Action`;
-        let result=await axios.get(url)
-    this.setState({
-      MovieArry:result.data
-
-    })
-    console.log(this.state.MovieArry);
-         
-
-        }
-
-        // getmovie = async(event)=>{
-        //   event.preventDefault();
-     
-        //   await this.setState({
-        //     searchQurey:event.target.query.value
-          
-        //   })
-          
-        //       //http://localhost:3001/movies?api_key=bec06652a4cb9591d54fceb6bc996e54&query=Action
-        //       let url=`${process.env.REACT_APP_PORT}/movies?api_key=bec06652a4cb9591d54fceb6bc996e54&query=${this.state.searchQurey}`;
-        //       let result=await axios.get(url)
-        //   this.setState({
-        //     MovieArry:result.data
-      
-        //   })
-        //   console.log(this.state.MovieArry);
-        // }      
-
-
-
-
-
-
-
-
-        
-  render() {
-    
-    return (
-      <div>
-
-<Router>
-          {/* <IsLoadingAndError> */}
-           
+  //   componentDidMount  = async()=>{
+  
+  //     // const { user } = this.props.auth0;
+  
+  //     // await this.setState({
+  //     //   userEmail: user.name
+  //     // })
+  
+  
+  
+  
+  //      let url=`http:${process.env.REACT_APP_PORT}/book?ownerName=emkhareez19@gmail.com`
+  //      let result = await axios.get(url)
+  //      await this.setState({
+  //       bookarray:result.data
+       
+  //      })
+  //      console.log('eam')
+  // console.log(this.state.bookarray)
+  
+  //   }  
+  
+    render() {
+      const { user ,isAuthenticated} = this.props.auth0;
+      console.log('app', this.props);
+      return(
+        <>
+          <Router>
+            {/* <IsLoadingAndError> */}
+              <Header />
+              
+              <Switch>
+                <Route exact path="/">
+                  {/* TODO: if the user is logged in, render the `BestBooks` component, if they are not, render the `Login` component */}
+                  {
+                    isAuthenticated ?<LogoutButton/>:<LoginButton/>
+                  }
+  
+                </Route>
+                
+                {/* TODO: add a route with a path of '/profile' that renders a `Profile` component */}
+                <Route path="/profile">
+                  <Profile/>
+                </Route>
+                <Route path="/DataAPI">
+                  <CardMovie/>
+                </Route>
+                <Route path="/FavMovie">
+                  <FavMovie/>
+                </Route>
+              </Switch>
             
-            <Switch>
-              <Route exact path="/">
-                {/* TODO: if the user is logged in, render the `BestBooks` component, if they are not, render the `Login` component */}
-                
-                <LoginButton/>
-
-                
-</Route>
-</Switch>
-
-</Router>
-
-      {/* <Form getmovie={this.getmovie}/> */}
-      <CardMovie array={this.state.MovieArry}/>
-      </div>
-    )
+            {/* </IsLoadingAndError> */}
+          </Router>
+         
+       
+        </>
+      );
+    }
   }
-}
-
-export default App
+  
+  export default withAuth0(App);

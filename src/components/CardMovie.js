@@ -3,20 +3,44 @@ import axios from 'axios'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Card, Button } from 'react-bootstrap';
 import { withAuth0 } from "@auth0/auth0-react";
+import FavMovie from './FavMovie';
 
 class CardMovie extends Component {
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      favMovieArray: [],
-      UserEmail: ''
 
+
+  constructor(props){
+    super(props)
+    this.state={
+      MovieArry:[],
+      searchQurey:'',
+   
+      UserEmail: ''
     }
   }
+  
+  componentDidMount = async()=>{
+    
+   
+
+       //http://localhost:3001/movies?api_key=bec06652a4cb9591d54fceb6bc996e54&query=Action
+       let url=`http://localhost:3001/movies?api_key=bec06652a4cb9591d54fceb6bc996e54&query=Action`;
+       let result=await axios.get(url)
+   this.setState({
+     MovieArry:result.data
+
+   })
+   console.log(this.state.MovieArry);
+        
+
+       }
+
+
+       
+
   // http:localhost:3001/addMovies/email
   ADDFav = async (item) => {
-
+console.log(item);
     const { user } = this.props.auth0;
 
     await this.setState({
@@ -25,29 +49,26 @@ class CardMovie extends Component {
 
     const email = this.state.userEmail;
 
-    console.log(email);
-let ResultAdd=axios.post(`${process.env.REACT_APP_PORT}/addMovies/${email}`,item)
+    
+let ResultAdd= await axios.post(`${process.env.REACT_APP_PORT}/addMovies?email=${email}`,item)
 
 await this.setState({
-  favMovieArray:ResultAdd.data
+  MovieArry:ResultAdd.data
 
 })
   }
   render() {
     return (
       <div>
-        {this.props.array.map((item, index) => {
+        {this.state.MovieArry.map((item, index) => {
           return (
 
             <Card style={{ width: '18rem', display: "inline-block" }} key={index}>
               <Card.Img variant="top" src={item.image_url} />
               <Card.Body>
                 <Card.Title>{item.title}</Card.Title>
-                <Card.Text>
-                  Some quick example text to build on the card title and make up the bulk of
-                  the card's content.
-                </Card.Text>
-                <Button variant="primary" onSubmit={this.ADDFav(item)}>addtofav</Button>
+               
+                <Button variant="primary" onClick={()=>this.ADDFav(item)}>addtofav</Button>
               </Card.Body>
             </Card>)
         })}
