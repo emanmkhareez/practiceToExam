@@ -44,7 +44,7 @@ this.setState({
 
     favDataArray:delResult.data
 })
-    }
+}
 //updateShowFun
 updateShowFun=async (index)=>{
     this.setState({

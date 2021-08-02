@@ -52,10 +52,10 @@ console.log(item);
     
 let ResultAdd= await axios.post(`${process.env.REACT_APP_PORT}/addMovies?email=${email}`,item)
 
-await this.setState({
-  MovieArry:ResultAdd.data
+// await this.setState({
+//   MovieArry:ResultAdd.data
 
-})
+// })
   }
   render() {
     return (
